@@ -1,3 +1,4 @@
+using System.Linq;
 using Shouldly;
 using Xunit;
 
@@ -10,10 +11,10 @@ namespace SimpleValidation.Core.Tests
         {
 	        var rule = PredicateHelpers.WrapWithPredicate<string, string>(
 				x => !string.IsNullOrEmpty(x),
-		        input => ValidationResult<string>.Fail("Empty string"));
+		        input => ValidationResult<string>.Fail("Empty string").AsArray());
 
-			rule("filled").IsFail.ShouldBeFalse();
-	        var fail = rule("");
+			rule("filled").Single().IsFail.ShouldBeFalse();
+	        var fail = rule("").Single();
 	        fail.IsFail.ShouldBeTrue();
 			fail.FailValue.ShouldBe("Empty string");
 		}
