@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleValidation.Core
+namespace SimpleValidation.Core.Combination
 {
 	public static class CombinationHelpers
 	{

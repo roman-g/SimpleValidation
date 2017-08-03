@@ -1,5 +1,4 @@
 ﻿using System;
-using SimpleValidation.Core;
 
 namespace SimpleValidation.Priority
 {

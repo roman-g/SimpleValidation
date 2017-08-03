@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Shouldly;
+using SimpleValidation.Core.Combination;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests

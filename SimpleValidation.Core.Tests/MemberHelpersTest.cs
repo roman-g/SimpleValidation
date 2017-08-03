@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Shouldly;
+using SimpleValidation.Core.MemberRules;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests
@@ -15,7 +15,7 @@ namespace SimpleValidation.Core.Tests
 							 StringProperty = "prop",
 							 StringField = "field"
 						 };
-			var builder = new RuleFor<TestClass>();
+			var builder = new MembersFor<TestClass>();
 			var fieldFail = builder.Member(x => x.StringField).Rule(Fail)(sample).Single();
 			fieldFail.ShouldBe((sample, "StringField", "field"));
 
@@ -26,7 +26,7 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Predicate()
 		{
-			var builder = new RuleFor<TestClass>();
+			var builder = new MembersFor<TestClass>();
 			var rule = builder.Member(x => x.StringField)
 							  .Rule((str, input) => str == input.StringProperty, Fail);
 

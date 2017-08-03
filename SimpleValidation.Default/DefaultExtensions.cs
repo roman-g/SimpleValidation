@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SimpleValidation.Core;
+using SimpleValidation.Core.MemberRules;
 
 namespace SimpleValidation.Default
 {

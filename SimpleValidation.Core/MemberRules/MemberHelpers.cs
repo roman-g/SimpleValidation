@@ -1,6 +1,7 @@
 ﻿using System;
+using SimpleValidation.Core.Common;
 
-namespace SimpleValidation.Core
+namespace SimpleValidation.Core.MemberRules
 {
 	public static class MemberHelpers
 	{

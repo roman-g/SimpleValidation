@@ -1,6 +1,6 @@
 using System.Linq;
 using Shouldly;
-using SimpleValidation.Core;
+using SimpleValidation.Core.MemberRules;
 using Xunit;
 
 namespace SimpleValidation.Default.Tests
@@ -12,8 +12,8 @@ namespace SimpleValidation.Default.Tests
         {
 	        var rules = new[]
 	        {
-		        new RuleFor<TestData>().Member(x => x.IntValue).GreaterThan(10),
-		        new RuleFor<TestData>().Member(x => x.StringValue).NotEmpty()
+		        new MembersFor<TestData>().Member(x => x.IntValue).GreaterThan(10),
+		        new MembersFor<TestData>().Member(x => x.StringValue).NotEmpty()
 	        };
 
 	        var result = rules.Apply(new TestData());

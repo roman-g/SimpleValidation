@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Shouldly;
 using SimpleValidation.Core;
+using SimpleValidation.Core.Combination;
+using SimpleValidation.Core.Common;
 using Xunit;
 
 namespace SimpleValidation.Priority.Test

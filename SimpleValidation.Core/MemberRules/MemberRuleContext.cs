@@ -1,4 +1,4 @@
-namespace SimpleValidation.Core
+namespace SimpleValidation.Core.MemberRules
 {
 	public class MemberRuleContext<TProperty, TIn>
 	{

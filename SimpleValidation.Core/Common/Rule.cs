@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleValidation.Core
+namespace SimpleValidation.Core.Common
 {
 	public static class Rule
 	{

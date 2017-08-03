@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace SimpleValidation.Core
+namespace SimpleValidation.Core.Common
 {
 	public static class ExpressionExtensions
 	{
