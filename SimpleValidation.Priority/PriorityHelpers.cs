@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using SimpleValidation.Core;
 
 namespace SimpleValidation.Priority
 {
-	public static class PriorityExtensions
+	public static class PriorityHelpers
 	{
-		public static IEnumerable<TOut> Apply<TIn, TOut>(
-			this IEnumerable<IRuleWithPriority<TIn, TOut>> rules,
-			TIn input)
+		public static IRuleWithPriority<TIn, TOut> WithPriority<TIn, TOut>(this Func<TIn, TOut[]> rule, int priority)
+		{
+			return new RuleWithPriority<TIn, TOut>
+				   {
+					   Rule = rule,
+					   Priority = priority
+				   };
+		}
+
+		public static Func<TIn, TOut[]> Collapse<TIn, TOut>(this IEnumerable<IRuleWithPriority<TIn, TOut>> rules)
 		{
 			var orderedRules = rules.GroupBy(x => x.Priority)
 									.OrderBy(x => x.Key)
@@ -18,11 +24,11 @@ namespace SimpleValidation.Priority
 									.Select(x => x.Rule)
 									.ToArray();
 
-			return CombinationHelpers.Order(orderedRules)(input);
+			return CombinationHelpers.Order(orderedRules);
 		}
 
-		public static IRuleWithPriority<TIn, TOut> Combine<TIn, TOut>(IRuleWithPriority<TIn, TOut>[] rules,
-																	  Func<Func<TIn, TOut[]>[], Func<TIn, TOut[]>> combinator)
+		public static IRuleWithPriority<TIn, TOut> Combine<TIn, TOut>(Func<Func<TIn, TOut[]>[], Func<TIn, TOut[]>> combinator,
+			params IRuleWithPriority<TIn, TOut>[] rules)
 		{
 			var priorities = rules.Select(x => x.Priority).Distinct().ToArray();
 			if (priorities.Length > 1)
@@ -38,17 +44,17 @@ namespace SimpleValidation.Priority
 		public static IRuleWithPriority<TIn, TOut> Then<TIn, TOut>(this IRuleWithPriority<TIn, TOut> first,
 																   IRuleWithPriority<TIn, TOut> second)
 		{
-			return Combine(new[] {first, second}, CombinationHelpers.Order);
+			return Combine(CombinationHelpers.Order, first, second);
 		}
 
 		public static IRuleWithPriority<TIn, TOut> Order<TIn, TOut>(params IRuleWithPriority<TIn, TOut>[] rules)
 		{
-			return Combine(rules, CombinationHelpers.Order);
+			return Combine(CombinationHelpers.Order, rules);
 		}
 
 		public static IRuleWithPriority<TIn, TOut> Union<TIn, TOut>(params IRuleWithPriority<TIn, TOut>[] rules)
 		{
-			return Combine(rules, CombinationHelpers.Union);
+			return Combine(CombinationHelpers.Union, rules);
 		}
 	}
 }
