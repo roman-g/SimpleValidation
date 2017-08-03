@@ -17,12 +17,10 @@ namespace SimpleValidation.Core.Tests
 						 };
 			var builder = new RuleFor<TestClass>();
 			var fieldFail = builder.Member(x => x.StringField).Rule(Fail)(sample).Single();
-			fieldFail.IsFail.ShouldBeTrue();
-			fieldFail.FailValue.ShouldBe((sample, "StringField", "field"));
+			fieldFail.ShouldBe((sample, "StringField", "field"));
 
 			var propFail = builder.Member(x => x.StringProperty).Rule(Fail)(sample).Single();
-			propFail.IsFail.ShouldBeTrue();
-			propFail.FailValue.ShouldBe((sample, "StringProperty", "prop"));
+			propFail.ShouldBe((sample, "StringProperty", "prop"));
 		}
 
 		[Fact]
@@ -34,21 +32,15 @@ namespace SimpleValidation.Core.Tests
 
 			var sampleForFail = new TestClass {StringField = "field", StringProperty = "property"};
 			var fail = rule(sampleForFail).Single();
-			fail.IsFail.ShouldBeTrue();
-			fail.FailValue.ShouldBe((sampleForFail, "StringField", "field"));
+			fail.ShouldBe((sampleForFail, "StringField", "field"));
 
 			var sampleForSuccess = new TestClass { StringField = "good", StringProperty = "good" };
-			var success = rule(sampleForSuccess).Single();
-			success.IsFail.ShouldBeFalse();
+			rule(sampleForSuccess).ShouldBeEmpty();
 		}
 
-		private static ValidationResult<(TestClass, string, string)>[] Fail(MemberRuleContext<string, TestClass> context)
+		private static (TestClass, string, string)[] Fail(MemberRuleContext<string, TestClass> context)
 		{
-			return ValidationResult<(
-					TestClass input,
-					string memberName,
-					string memberValue)>
-				.Fail((context.Input, context.MemberName, context.MemberValue)).AsArray();
+			return (context.Input, context.MemberName, context.MemberValue).AsArray();
 		}
 
 		public class TestClass

@@ -4,10 +4,10 @@ namespace SimpleValidation.Core
 {
 	public static class MemberHelpers
 	{
-		public static Func<TIn, ValidationResult<TOut>[]> Rule<TIn, TProperty, TOut>(
+		public static Func<TIn, TOut[]> Rule<TIn, TProperty, TOut>(
 			this MemberAccessor<TIn, TProperty> accessor,
 			Func<TProperty, TIn, bool> predicate,
-			Func<MemberRuleContext<TProperty, TIn>, ValidationResult<TOut>[]> mapping)
+			Func<MemberRuleContext<TProperty, TIn>, TOut[]> mapping)
 		{
 			var mappingWithPredicate = PredicateHelpers.WrapWithPredicate(
 				context => predicate(context.MemberValue, context.Input),
@@ -15,9 +15,9 @@ namespace SimpleValidation.Core
 			return accessor.Rule(mappingWithPredicate);
 		}
 
-		public static Func<TIn, ValidationResult<TOut>[]> Rule<TIn, TProperty, TOut>(
+		public static Func<TIn, TOut[]> Rule<TIn, TProperty, TOut>(
 			this MemberAccessor<TIn, TProperty> accessor,
-			Func<MemberRuleContext<TProperty, TIn>, ValidationResult<TOut>[]> mapping)
+			Func<MemberRuleContext<TProperty, TIn>, TOut[]> mapping)
 		{
 			return input =>
 			{

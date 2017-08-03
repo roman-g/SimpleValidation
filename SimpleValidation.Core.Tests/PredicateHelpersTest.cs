@@ -11,12 +11,10 @@ namespace SimpleValidation.Core.Tests
         {
 	        var rule = PredicateHelpers.WrapWithPredicate<string, string>(
 				x => !string.IsNullOrEmpty(x),
-		        input => ValidationResult<string>.Fail("Empty string").AsArray());
+		        input => "Empty string".AsArray());
 
-			rule("filled").Single().IsFail.ShouldBeFalse();
-	        var fail = rule("").Single();
-	        fail.IsFail.ShouldBeTrue();
-			fail.FailValue.ShouldBe("Empty string");
+			rule("filled").ShouldBeEmpty();
+	        rule("").Single().ShouldBe("Empty string");
 		}
     }
 }

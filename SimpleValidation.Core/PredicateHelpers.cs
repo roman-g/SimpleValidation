@@ -4,11 +4,11 @@ namespace SimpleValidation.Core
 {
 	public static class PredicateHelpers
 	{
-		public static Func<TIn, ValidationResult<TOut>[]> WrapWithPredicate<TIn, TOut>(
+		public static Func<TIn, TOut[]> WrapWithPredicate<TIn, TOut>(
 			Func<TIn, bool> predicate,
-			Func<TIn, ValidationResult<TOut>[]> mapping)
+			Func<TIn, TOut[]> mapping)
 		{
-			return input => !predicate(input) ? mapping(input) : ValidationResult<TOut>.Success().AsArray();
+			return input => !predicate(input) ? mapping(input) : new TOut[0];
 		}
 	}
 }
