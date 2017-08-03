@@ -1,5 +1,6 @@
 ﻿using System;
 using SimpleValidation.Core.Common;
+using SimpleValidation.Core.PredicateRules;
 
 namespace SimpleValidation.Core.MemberRules
 {
@@ -10,9 +11,7 @@ namespace SimpleValidation.Core.MemberRules
 			Func<TProperty, TIn, bool> predicate,
 			Func<MemberRuleContext<TProperty, TIn>, TOut[]> mapping)
 		{
-			var mappingWithPredicate = PredicateHelpers.WrapWithPredicate(
-				context => predicate(context.MemberValue, context.Input),
-				mapping);
+			var mappingWithPredicate = mapping.WithPredicate(context => predicate(context.MemberValue, context.Input));
 			return accessor.Rule(mappingWithPredicate);
 		}
 

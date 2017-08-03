@@ -4,6 +4,7 @@ using Shouldly;
 using SimpleValidation.Core;
 using SimpleValidation.Core.Combination;
 using SimpleValidation.Core.Common;
+using SimpleValidation.Core.PredicateRules;
 using Xunit;
 
 namespace SimpleValidation.Priority.Test

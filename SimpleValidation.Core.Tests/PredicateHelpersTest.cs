@@ -1,5 +1,7 @@
 using System.Linq;
 using Shouldly;
+using SimpleValidation.Core.Common;
+using SimpleValidation.Core.PredicateRules;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests
@@ -9,9 +11,7 @@ namespace SimpleValidation.Core.Tests
         [Fact]
         public void Simple()
         {
-	        var rule = PredicateHelpers.WrapWithPredicate<string, string>(
-				x => !string.IsNullOrEmpty(x),
-		        input => "Empty string".AsArray());
+	        var rule = Rule.Single((string input) => "Empty string").WithPredicate(x => !string.IsNullOrEmpty(x));
 
 			rule("filled").ShouldBeEmpty();
 	        rule("").Single().ShouldBe("Empty string");

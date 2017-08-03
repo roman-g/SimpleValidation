@@ -2,6 +2,8 @@
 using System.Linq;
 using Shouldly;
 using SimpleValidation.Core.Combination;
+using SimpleValidation.Core.Common;
+using SimpleValidation.Core.PredicateRules;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests
@@ -11,13 +13,8 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Then()
 		{
-			var rule1 = PredicateHelpers.WrapWithPredicate(
-				str => str != "failInput1",
-				new Func<string, string[]>(x => "fail1".AsArray()));
-
-			var rule2 = PredicateHelpers.WrapWithPredicate(
-				str => str != "failInput2",
-				new Func<string, string[]>(x => "fail2".AsArray()));
+			var rule1 = Rule.Single((string x) => "fail1").WithPredicate(str => str != "failInput1");
+			var rule2 = Rule.Single((string x) => "fail2").WithPredicate(str => str != "failInput2");
 
 			var crashRule = new Func<string, string[]>(_ => throw new Exception());
 
@@ -32,13 +29,8 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Union()
 		{
-			var rule1 = PredicateHelpers.WrapWithPredicate(
-				str => str != "failInput",
-				new Func<string, string[]>(x => "fail1".AsArray()));
-
-			var rule2 = PredicateHelpers.WrapWithPredicate(
-				str => str != "failInput",
-				new Func<string, string[]>(x => "fail2".AsArray()));
+			var rule1 = Rule.Single((string x) => "fail1").WithPredicate(str => str != "failInput");
+			var rule2 = Rule.Single((string x) => "fail2").WithPredicate(str => str != "failInput");
 			
 			var rule = CombinationHelpers.Union(rule1, rule2);
 

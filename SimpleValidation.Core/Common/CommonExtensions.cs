@@ -1,4 +1,4 @@
-﻿namespace SimpleValidation.Core
+﻿namespace SimpleValidation.Core.Common
 {
 	public static class CommonExtensions
 	{

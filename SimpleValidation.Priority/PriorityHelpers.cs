@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SimpleValidation.Core;
 using SimpleValidation.Core.Combination;
+using SimpleValidation.Core.Common;
 
 namespace SimpleValidation.Priority
 {

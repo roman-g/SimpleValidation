@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Shouldly;
+using SimpleValidation.Core.Common;
 using SimpleValidation.Core.MemberRules;
 using Xunit;
 
