@@ -8,7 +8,7 @@ using Xunit;
 
 namespace SimpleValidation.Core.Tests
 {
-	public class CombinationExtensionsTest
+	public class CombinationHelpersTest
 	{
 		[Fact]
 		public void Then()
