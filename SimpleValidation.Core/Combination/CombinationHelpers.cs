@@ -6,15 +6,15 @@ namespace SimpleValidation.Core.Combination
 {
 	public static class CombinationHelpers
 	{
-		public static Func<TIn, TOut[]> Then<TIn, TOut>(this Func<TIn, TOut[]> first,
-														params Func<TIn, TOut[]>[] otherRules)
+		public static Func<TIn, TFail[]> Then<TIn, TFail>(this Func<TIn, TFail[]> first,
+														params Func<TIn, TFail[]>[] otherRules)
 		{
 			return Order(new[] {first}.Concat(otherRules).ToArray());
 		}
 
-		public static Func<TIn, TOut[]> Order<TIn, TOut>(params Func<TIn, TOut[]>[] rules)
+		public static Func<TIn, TFail[]> Order<TIn, TFail>(params Func<TIn, TFail[]>[] rules)
 		{
-			IEnumerable<TOut[]> Apply(TIn input)
+			IEnumerable<TFail[]> Apply(TIn input)
 			{
 				foreach (var rule in rules)
 				{
@@ -28,7 +28,7 @@ namespace SimpleValidation.Core.Combination
 			return input => Apply(input).SelectMany(x => x).ToArray();
 		}
 
-		public static Func<TIn, TOut[]> Union<TIn, TOut>(params Func<TIn, TOut[]>[] rules)
+		public static Func<TIn, TFail[]> Union<TIn, TFail>(params Func<TIn, TFail[]>[] rules)
 		{
 			return input => rules.SelectMany(x => x(input)).ToArray();
 		}

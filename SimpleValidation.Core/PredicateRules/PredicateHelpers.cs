@@ -4,11 +4,11 @@ namespace SimpleValidation.Core.PredicateRules
 {
 	public static class PredicateHelpers
 	{
-		public static Func<TIn, TOut[]> WithPredicate<TIn, TOut>(
-			this Func<TIn, TOut[]> mapping,
+		public static Func<TIn, TFail[]> WithPredicate<TIn, TFail>(
+			this Func<TIn, TFail[]> mapping,
 			Func<TIn, bool> predicate)
 		{
-			return input => !predicate(input) ? mapping(input) : new TOut[0];
+			return input => !predicate(input) ? mapping(input) : new TFail[0];
 		}
 	}
 }

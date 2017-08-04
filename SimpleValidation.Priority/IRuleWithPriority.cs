@@ -2,9 +2,9 @@
 
 namespace SimpleValidation.Priority
 {
-    public interface IRuleWithPriority<in TIn, out TOut>
+    public interface IRuleWithPriority<in TIn, out TFail>
     {
-        Func<TIn, TOut[]> Rule { get; }
+        Func<TIn, TFail[]> Rule { get; }
         int Priority { get; }
     }
 }
