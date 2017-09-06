@@ -12,8 +12,8 @@ namespace SimpleValidation.Default.Tests
         {
 	        var rules = new[]
 	        {
-		        new MembersFor<TestData>().Member(x => x.IntValue).GreaterThan(10),
-		        new MembersFor<TestData>().Member(x => x.StringValue).NotEmpty()
+		        new ValidationFor<TestData>().Member(x => x.IntValue).GreaterThan(10),
+		        new ValidationFor<TestData>().Member(x => x.StringValue).NotEmpty()
 	        };
 
 	        var result = rules.Apply(new TestData());

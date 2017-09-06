@@ -20,7 +20,7 @@ namespace SimpleValidation.Core.Tests
 							 StringProperty = "prop",
 							 StringField = "field"
 						 };
-			var builder = new MembersFor<TestClass>();
+			var builder = new ValidationFor<TestClass>();
 			var fieldFail = builder.Member(x => x.StringField).Rule(Fail)(sample).Single();
 			fieldFail.ShouldBe((sample, "StringField", "field"));
 
@@ -31,7 +31,7 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Predicate()
 		{
-			var builder = new MembersFor<TestClass>();
+			var builder = new ValidationFor<TestClass>();
 			var rule = builder.Member(x => x.StringField)
 							  .Rule((str, input) => str == input.StringProperty, Fail);
 

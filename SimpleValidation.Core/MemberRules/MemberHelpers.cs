@@ -8,6 +8,15 @@ namespace SimpleValidation.Core.MemberRules
 	{
 		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this MemberAccessor<TIn, TProperty> accessor,
+			Func<TProperty, bool> predicate,
+			Validator<MemberRuleContext<TProperty, TIn>, TFail> mapping)
+		{
+			var mappingWithPredicate = mapping.WithPredicate(context => predicate(context.MemberValue));
+			return accessor.Rule(mappingWithPredicate);
+		}
+
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
+			this MemberAccessor<TIn, TProperty> accessor,
 			Func<TProperty, TIn, bool> predicate,
 			Validator<MemberRuleContext<TProperty, TIn>, TFail> mapping)
 		{
