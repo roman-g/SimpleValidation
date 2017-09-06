@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shouldly;
 using SimpleValidation.Core.Combination;
@@ -16,7 +17,7 @@ namespace SimpleValidation.Core.Tests
 			var rule1 = Rule.Single((string x) => "fail1").WithPredicate(str => str != "failInput1");
 			var rule2 = Rule.Single((string x) => "fail2").WithPredicate(str => str != "failInput2");
 
-			var crashRule = new Func<string, string[]>(_ => throw new Exception());
+			var crashRule = new Validator<string, string>(_ => throw new Exception());
 
 			var rule = rule1.Then(rule2);
 

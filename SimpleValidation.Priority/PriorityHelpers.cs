@@ -9,7 +9,7 @@ namespace SimpleValidation.Priority
 {
 	public static class PriorityHelpers
 	{
-		public static IRuleWithPriority<TIn, TFail> WithPriority<TIn, TFail>(this Func<TIn, TFail[]> rule, int priority)
+		public static IRuleWithPriority<TIn, TFail> WithPriority<TIn, TFail>(this Validator<TIn, TFail> rule, int priority)
 		{
 			return new RuleWithPriority<TIn, TFail>
 				   {
@@ -18,7 +18,7 @@ namespace SimpleValidation.Priority
 				   };
 		}
 
-		public static Func<TIn, TFail[]> Collapse<TIn, TFail>(this IEnumerable<IRuleWithPriority<TIn, TFail>> rules)
+		public static Validator<TIn, TFail> Collapse<TIn, TFail>(this IEnumerable<IRuleWithPriority<TIn, TFail>> rules)
 		{
 			var orderedRules = rules.GroupBy(x => x.Priority)
 									.OrderBy(x => x.Key)
@@ -29,7 +29,7 @@ namespace SimpleValidation.Priority
 			return CombinationHelpers.Order(orderedRules);
 		}
 
-		public static IRuleWithPriority<TIn, TFail> Combine<TIn, TFail>(Func<Func<TIn, TFail[]>[], Func<TIn, TFail[]>> combinator,
+		public static IRuleWithPriority<TIn, TFail> Combine<TIn, TFail>(Func<Validator<TIn, TFail>[], Validator<TIn, TFail>> combinator,
 			params IRuleWithPriority<TIn, TFail>[] rules)
 		{
 			var priorities = rules.Select(x => x.Priority).Distinct().ToArray();

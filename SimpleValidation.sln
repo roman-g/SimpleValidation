@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleValidation.Default", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleValidation.Default.Tests", "SimpleValidation.Default.Tests\SimpleValidation.Default.Tests.csproj", "{542616F2-D1D4-4253-AD5F-DA031C0E6381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleValidation.Priority.Test", "SimpleValidation.Priority.Test\SimpleValidation.Priority.Test.csproj", "{B87D8E74-84C9-480B-9A02-CF34118882B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleValidation.Priority.Test", "SimpleValidation.Priority.Test\SimpleValidation.Priority.Test.csproj", "{B87D8E74-84C9-480B-9A02-CF34118882B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

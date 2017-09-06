@@ -1,10 +1,11 @@
 ﻿using System;
+using SimpleValidation.Core.Common;
 
 namespace SimpleValidation.Priority
 {
     public interface IRuleWithPriority<in TIn, out TFail>
     {
-        Func<TIn, TFail[]> Rule { get; }
+		Validator<TIn, TFail> Rule { get; }
         int Priority { get; }
     }
 }

@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using Shouldly;
-using SimpleValidation.Core;
 using SimpleValidation.Core.Combination;
 using SimpleValidation.Core.Common;
 using SimpleValidation.Core.PredicateRules;
@@ -52,8 +50,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void CombineFailsIfPrioritiesDontMatch()
 		{
-			var rule1 = new Func<string, string[]>(s => "fail1".AsArray()).WithPriority(1);
-			var rule2 = new Func<string, string[]>(s => "fail2".AsArray()).WithPriority(2);
+			var rule1 = new Validator<string, string>(s => "fail1".AsArray()).WithPriority(1);
+			var rule2 = new Validator<string, string>(s => "fail2".AsArray()).WithPriority(2);
 			Should.Throw<ValidationException>(() => PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2));
 		}
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleValidation.Core;
 using SimpleValidation.Core.Common;
 using SimpleValidation.Core.MemberRules;
 
@@ -9,7 +8,7 @@ namespace SimpleValidation.Default
 {
 	public static class DefaultExtensions
 	{
-		public static DefaultValidationSummary Apply<TIn>(this IEnumerable<Func<TIn, DefaultValidationInfo[]>> validationErrors, TIn input)
+		public static DefaultValidationSummary Apply<TIn>(this IEnumerable<Validator<TIn, DefaultValidationInfo>> validationErrors, TIn input)
 		{
 			return new DefaultValidationSummary
 			{
@@ -17,17 +16,17 @@ namespace SimpleValidation.Default
 			};
 		}
 
-		public static Func<TIn, DefaultValidationInfo[]> GreaterThan<TIn>(this MemberAccessor<TIn, int> accessor, int threshold)
+		public static Validator<TIn, DefaultValidationInfo> GreaterThan<TIn>(this MemberAccessor<TIn, int> accessor, int threshold)
 		{
 			return accessor.DefaultPropertRule((x, _) => x > threshold, $"Value should be greater than {threshold}");
 		}
 
-		public static Func<TIn, DefaultValidationInfo[]> NotEmpty<TIn>(this MemberAccessor<TIn, string> accessor)
+		public static Validator<TIn, DefaultValidationInfo> NotEmpty<TIn>(this MemberAccessor<TIn, string> accessor)
 		{
 			return accessor.DefaultPropertRule((x, _) => !string.IsNullOrEmpty(x), "String should not be empty");
 		}
 
-		public static Func<TIn, DefaultValidationInfo[]> DefaultPropertRule<TIn, TProperty>(
+		public static Validator<TIn, DefaultValidationInfo> DefaultPropertRule<TIn, TProperty>(
 			this MemberAccessor<TIn, TProperty> accessor,
 			Func<TProperty, TIn, bool> predicate,
 			string message,

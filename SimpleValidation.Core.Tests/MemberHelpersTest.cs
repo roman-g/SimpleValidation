@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using Shouldly;
 using SimpleValidation.Core.Common;
 using SimpleValidation.Core.MemberRules;
@@ -11,6 +13,8 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Simple()
 		{
+			Expression<Func<TestClass, object>> e = x => x.StringField;
+
 			var sample = new TestClass
 						 {
 							 StringProperty = "prop",
