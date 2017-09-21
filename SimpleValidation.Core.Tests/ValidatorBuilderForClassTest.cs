@@ -20,5 +20,14 @@ namespace SimpleValidation.Core.Tests
 			ruleWithStaticFail("bad").Single().ShouldBe("failed");
 			ruleWithStaticFail("good").ShouldBeEmpty();
 		}
+
+		[Fact]
+		public void Union()
+		{
+			var builder = MakeValidator.For<string>();
+			var rule = builder.Union(x => x.Make(_ => false, "1"),
+									 x => x.Make(_ => false, "2"));
+			rule("").ShouldBe(new[] { "1", "2" });
+		}
 	}
 }
