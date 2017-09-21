@@ -14,8 +14,8 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Then()
 		{
-			var rule1 = Rule.Single((string x) => "fail1").WithPredicate(str => str != "failInput1");
-			var rule2 = Rule.Single((string x) => "fail2").WithPredicate(str => str != "failInput2");
+			var rule1 = SimpleValidator.Make((string x) => "fail1").WithPredicate(str => str != "failInput1");
+			var rule2 = SimpleValidator.Make((string x) => "fail2").WithPredicate(str => str != "failInput2");
 
 			var crashRule = new Validator<string, string>(_ => throw new Exception());
 
@@ -30,8 +30,8 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Union()
 		{
-			var rule1 = Rule.Single((string x) => "fail1").WithPredicate(str => str != "failInput");
-			var rule2 = Rule.Single((string x) => "fail2").WithPredicate(str => str != "failInput");
+			var rule1 = SimpleValidator.Make((string x) => "fail1").WithPredicate(str => str != "failInput");
+			var rule2 = SimpleValidator.Make((string x) => "fail2").WithPredicate(str => str != "failInput");
 			
 			var rule = CombinationHelpers.Union(rule1, rule2);
 

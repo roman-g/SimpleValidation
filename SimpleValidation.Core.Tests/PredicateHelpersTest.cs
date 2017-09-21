@@ -11,7 +11,7 @@ namespace SimpleValidation.Core.Tests
         [Fact]
         public void Simple()
         {
-	        var rule = Rule.Single((string input) => "Empty string").WithPredicate(x => !string.IsNullOrEmpty(x));
+	        var rule = SimpleValidator.Make((string input) => "Empty string").WithPredicate(x => !string.IsNullOrEmpty(x));
 
 			rule("filled").ShouldBeEmpty();
 	        rule("").Single().ShouldBe("Empty string");

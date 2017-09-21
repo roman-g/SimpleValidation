@@ -12,8 +12,8 @@ namespace SimpleValidation.Priority.Test
         [Fact]
         public void CollapseDifferentPriorities()
         {
-	        var rule1 = Rule.Single((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
-			var rule2 = Rule.Single((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(2);
+	        var rule1 = SimpleValidator.Make((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
+			var rule2 = SimpleValidator.Make((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(2);
 			
 			var rules = new[] { rule1, rule2 };
 			var collapsedRule = rules.Collapse();
@@ -25,8 +25,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void CollapseTheSamePriorities()
 		{
-			var rule1 = Rule.Single((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
-			var rule2 = Rule.Single((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(1);
+			var rule1 = SimpleValidator.Make((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
+			var rule2 = SimpleValidator.Make((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(1);
 
 			var rules = new[] { rule1, rule2 };
 			var collapsedRule = rules.Collapse();
@@ -37,8 +37,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void Combine()
 		{
-			var rule1 = Rule.Single((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
-			var rule2 = Rule.Single((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(1);
+			var rule1 = SimpleValidator.Make((string s) => "fail1").WithPredicate(s => s != "failInput1").WithPriority(1);
+			var rule2 = SimpleValidator.Make((string s) => "fail2").WithPredicate(s => !s.StartsWith("failInput")).WithPriority(1);
 			
 			var combinedRule = PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2);
 			combinedRule.Priority.ShouldBe(1);
@@ -50,8 +50,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void CombineFailsIfPrioritiesDontMatch()
 		{
-			var rule1 = new Validator<string, string>(s => "fail1".AsArray()).WithPriority(1);
-			var rule2 = new Validator<string, string>(s => "fail2".AsArray()).WithPriority(2);
+			var rule1 = SimpleValidator.Make((string s) => "fail1").WithPriority(1);
+			var rule2 = SimpleValidator.Make((string s) => "fail2").WithPriority(2);
 			Should.Throw<ValidationException>(() => PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2));
 		}
     }
