@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleValidation.Core;
 using SimpleValidation.Core.Combination;
 using SimpleValidation.Core.Common;
 
@@ -9,54 +8,65 @@ namespace SimpleValidation.Priority
 {
 	public static class PriorityHelpers
 	{
-		public static IRuleWithPriority<TIn, TFail> WithPriority<TIn, TFail>(this Validator<TIn, TFail> rule, int priority)
+		public static IValidatorWithPriority<TIn, TFail> WithPriority<TIn, TFail>(
+			this Validator<TIn, TFail> rule,
+			int priority)
 		{
-			return new RuleWithPriority<TIn, TFail>
+			return new ValidatorWithPriority<TIn, TFail>
 				   {
-					   Rule = rule,
+					   Validator = rule,
 					   Priority = priority
 				   };
 		}
 
-		public static Validator<TIn, TFail> Collapse<TIn, TFail>(this IEnumerable<IRuleWithPriority<TIn, TFail>> rules)
+		public static Validator<TIn, TFail> Collapse<TIn, TFail>(this IEnumerable<IValidatorWithPriority<TIn, TFail>> rules)
 		{
 			var orderedRules = rules.GroupBy(x => x.Priority)
 									.OrderBy(x => x.Key)
 									.Select(x => Union(x.ToArray()))
-									.Select(x => x.Rule)
+									.Select(x => x.Validator)
 									.ToArray();
 
 			return CombinationHelpers.Order(orderedRules);
 		}
 
-		public static IRuleWithPriority<TIn, TFail> Combine<TIn, TFail>(Func<Validator<TIn, TFail>[], Validator<TIn, TFail>> combinator,
-			params IRuleWithPriority<TIn, TFail>[] rules)
+		public static IValidatorWithPriority<TIn, TFail> Combine<TIn, TFail>(
+			Func<Validator<TIn, TFail>[], Validator<TIn, TFail>> combinator,
+			params IValidatorWithPriority<TIn, TFail>[] validators)
 		{
-			var priorities = rules.Select(x => x.Priority).Distinct().ToArray();
+			var priorities = validators.Select(x => x.Priority).Distinct().ToArray();
 			if (priorities.Length > 1)
 				throw new ValidationException($"More than one priority found: [{string.Join(", ", priorities)}]");
 
-			return new RuleWithPriority<TIn, TFail>
+			return new ValidatorWithPriority<TIn, TFail>
 				   {
 					   Priority = priorities.Single(),
-					   Rule = combinator(rules.Select(x => x.Rule).ToArray())
+					   Validator = combinator(validators.Select(x => x.Validator).ToArray())
 				   };
 		}
 
-		public static IRuleWithPriority<TIn, TFail> Then<TIn, TFail>(this IRuleWithPriority<TIn, TFail> first,
-																   IRuleWithPriority<TIn, TFail> second)
+		public static IValidatorWithPriority<TIn, TFail> Then<TIn, TFail>(this IValidatorWithPriority<TIn, TFail> first,
+																		  IValidatorWithPriority<TIn, TFail> second)
 		{
 			return Combine(CombinationHelpers.Order, first, second);
 		}
 
-		public static IRuleWithPriority<TIn, TFail> Order<TIn, TFail>(params IRuleWithPriority<TIn, TFail>[] rules)
+		public static IValidatorWithPriority<TIn, TFail> Union<TIn, TFail>(this IValidatorWithPriority<TIn, TFail> first,
+																		   IValidatorWithPriority<TIn, TFail> second)
 		{
-			return Combine(CombinationHelpers.Order, rules);
+			return Combine(CombinationHelpers.Union, first, second);
 		}
 
-		public static IRuleWithPriority<TIn, TFail> Union<TIn, TFail>(params IRuleWithPriority<TIn, TFail>[] rules)
+		public static IValidatorWithPriority<TIn, TFail> Order<TIn, TFail>(
+			params IValidatorWithPriority<TIn, TFail>[] validators)
 		{
-			return Combine(CombinationHelpers.Union, rules);
+			return Combine(CombinationHelpers.Order, validators);
+		}
+
+		public static IValidatorWithPriority<TIn, TFail> Union<TIn, TFail>(
+			params IValidatorWithPriority<TIn, TFail>[] validators)
+		{
+			return Combine(CombinationHelpers.Union, validators);
 		}
 	}
 }

@@ -3,9 +3,9 @@ using SimpleValidation.Core.Common;
 
 namespace SimpleValidation.Priority
 {
-    public interface IRuleWithPriority<in TIn, out TFail>
+    public interface IValidatorWithPriority<in TIn, out TFail>
     {
-		Validator<TIn, TFail> Rule { get; }
+		Validator<TIn, TFail> Validator { get; }
         int Priority { get; }
     }
 }

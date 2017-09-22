@@ -43,9 +43,9 @@ namespace SimpleValidation.Priority.Test
 			
 			var combinedRule = PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2);
 			combinedRule.Priority.ShouldBe(1);
-			combinedRule.Rule("goodInput").ShouldBeEmpty();
-			combinedRule.Rule("failInput1").Single().ShouldBe("fail1");
-			combinedRule.Rule("failInputX").Single().ShouldBe("fail2");
+			combinedRule.Validator("goodInput").ShouldBeEmpty();
+			combinedRule.Validator("failInput1").Single().ShouldBe("fail1");
+			combinedRule.Validator("failInputX").Single().ShouldBe("fail2");
 		}
 
 		[Fact]
