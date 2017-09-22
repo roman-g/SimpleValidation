@@ -148,19 +148,19 @@ namespace SimpleValidation.Core.Tests
 																	  .Rule(s => s != null, "string property should not be null"))
 													   .Then(b.Rule(i => i.StringField == i.StringProperty, "strings should be equal")));
 
-			valdiator(new TestClass { StringField = null, StringProperty = null})
-				.ShouldBe(new[]{ "string field should not be null" , "string property should not be null" });
+			valdiator(new TestClass {StringField = null, StringProperty = null})
+				.ShouldBe(new[] {"string field should not be null", "string property should not be null"});
 
-			valdiator(new TestClass { StringField = "1", StringProperty = null })
-				.ShouldBe(new[] { "string field length should be gte 2", "string property should not be null" });
+			valdiator(new TestClass {StringField = "1", StringProperty = null})
+				.ShouldBe(new[] {"string field length should be gte 2", "string property should not be null"});
 
-			valdiator(new TestClass { StringField = "1", StringProperty = "2" })
-				.ShouldBe(new[] { "string field length should be gte 2" });
+			valdiator(new TestClass {StringField = "1", StringProperty = "2"})
+				.ShouldBe(new[] {"string field length should be gte 2"});
 
-			valdiator(new TestClass { StringField = "11", StringProperty = "2" })
-				.ShouldBe(new[] { "strings should be equal" });
+			valdiator(new TestClass {StringField = "11", StringProperty = "2"})
+				.ShouldBe(new[] {"strings should be equal"});
 
-			valdiator(new TestClass { StringField = "11", StringProperty = "11" })
+			valdiator(new TestClass {StringField = "11", StringProperty = "11"})
 				.ShouldBeEmpty();
 		}
 

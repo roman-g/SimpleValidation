@@ -55,5 +55,42 @@ namespace SimpleValidation.Priority.Test
 			var rule2 = SimpleValidator.Make((string s) => "fail2").WithPriority(2);
 			Should.Throw<ValidationException>(() => PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2));
 		}
-    }
+
+
+		[Fact]
+		public void Union()
+		{
+			var rule = MakeValidator.For<string>().Union(
+				x => x.Rule(_ => false, "fail1").WithPriority(1),
+				x => x.Rule(_ => false, "fail2").WithPriority(1));
+			rule.Priority.ShouldBe(1);
+			rule.Validator("").ShouldBe(new[]{"fail1", "fail2"});
+		}
+
+		[Fact]
+		public void Order()
+		{
+			var rule = MakeValidator.For<string>().Order(
+				x => x.Rule(_ => false, "fail1").WithPriority(1),
+				x => x.Rule(_ => false, "fail2").WithPriority(1));
+			rule.Priority.ShouldBe(1);
+			rule.Validator("").ShouldBe(new[] { "fail1" });
+		}
+
+		[Fact]
+		public void UnionFailsIfPrioritiesDontMatch()
+		{
+			Should.Throw<ValidationException>(() => MakeValidator.For<string>().Union(
+												  x => x.Rule(_ => false, "fail1").WithPriority(1),
+												  x => x.Rule(_ => false, "fail2").WithPriority(2)));
+		}
+
+		[Fact]
+		public void OrderFailsIfPrioritiesDontMatch()
+		{
+			Should.Throw<ValidationException>(() => MakeValidator.For<string>().Order(
+												  x => x.Rule(_ => false, "fail1").WithPriority(1),
+												  x => x.Rule(_ => false, "fail2").WithPriority(2)));
+		}
+	}
 }

@@ -23,10 +23,10 @@ namespace SimpleValidation.Core.Builders
 			return CombinationHelpers.Order(rules.Select(x => x(builder)).ToArray());
 		}
 
-		public static Validator<TIn, TFail> Custom<TBuilder, TIn, TFail>(
+		public static TResult Custom<TBuilder, TResult>(
 			this TBuilder builder,
-			Func<TBuilder, Validator<TIn, TFail>> creator)
-			where TBuilder : IValidationBuilder<TIn>
+			Func<TBuilder, TResult> creator)
+			where TBuilder : IValidationBuilder
 		{
 			return creator(builder);
 		}
