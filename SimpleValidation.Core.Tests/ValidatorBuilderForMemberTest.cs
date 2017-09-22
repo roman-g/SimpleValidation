@@ -137,6 +137,33 @@ namespace SimpleValidation.Core.Tests
 			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
 		}
 
+		[Fact]
+		public void ComplexExample()
+		{
+			var valdiator = MakeValidator.For<TestClass>()
+										 .Custom(b => b.Union(bb => bb.ForMember(x => x.StringField)
+																	  .Order(x => x.Rule(s => s != null, "string field should not be null"),
+																			 x => x.Rule(s => s.Length >= 2, "string field length should be gte 2")),
+															  bb => bb.ForMember(x => x.StringProperty)
+																	  .Rule(s => s != null, "string property should not be null"))
+													   .Then(b.Rule(i => i.StringField == i.StringProperty, "strings should be equal")));
+
+			valdiator(new TestClass { StringField = null, StringProperty = null})
+				.ShouldBe(new[]{ "string field should not be null" , "string property should not be null" });
+
+			valdiator(new TestClass { StringField = "1", StringProperty = null })
+				.ShouldBe(new[] { "string field length should be gte 2", "string property should not be null" });
+
+			valdiator(new TestClass { StringField = "1", StringProperty = "2" })
+				.ShouldBe(new[] { "string field length should be gte 2" });
+
+			valdiator(new TestClass { StringField = "11", StringProperty = "2" })
+				.ShouldBe(new[] { "strings should be equal" });
+
+			valdiator(new TestClass { StringField = "11", StringProperty = "11" })
+				.ShouldBeEmpty();
+		}
+
 		private static (TestClass, string, string) Fail(MemberRuleContext<TestClass, string> context)
 		{
 			return (context.Input, context.MemberName, context.MemberValue);
