@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using System.Linq.Expressions;
-using SimpleValidation.Core.Combination;
 using SimpleValidation.Core.Common;
 using SimpleValidation.Core.PredicateRules;
 
@@ -21,13 +19,6 @@ namespace SimpleValidation.Core.Builders
 															 TFail fail)
 		{
 			return SimpleValidator.Make((TIn x) => fail).WithPredicate(predicate);
-		}
-
-		public static Validator<TIn, TFail> Union<TIn, TFail>(
-			this IValidatorBuilderForClass<TIn> builder,
-			params Func<IValidatorBuilderForClass<TIn>, Validator<TIn, TFail>>[] rules)
-		{
-			return CombinationHelpers.Union(rules.Select(x => x(builder)).ToArray());
 		}
 
 		public static IValidatorBuilderForMember<TIn, TProperty> ForMember<TIn, TProperty>(

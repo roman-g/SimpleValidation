@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Shouldly;
 using SimpleValidation.Core.Builders;
+using SimpleValidation.Core.Combination;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests
@@ -28,6 +29,28 @@ namespace SimpleValidation.Core.Tests
 			var rule = builder.Union(x => x.Make(_ => false, "1"),
 									 x => x.Make(_ => false, "2"));
 			rule("").ShouldBe(new[] { "1", "2" });
+		}
+
+		[Fact]
+		public void Order()
+		{
+			var builder = MakeValidator.For<int>();
+			var rule = builder.Order(x => x.Make(y => y > 0, "1"),
+									 x => x.Make(y => y > 1, "2"));
+			rule(0).ShouldBe(new[] { "1" });
+			rule(1).ShouldBe(new[] { "2" });
+			rule(2).ShouldBeEmpty();
+		}
+
+		[Fact]
+		public void Custom()
+		{
+			var builder = MakeValidator.For<int>();
+			var rule = builder.Custom(x => x.Make(y => y > 0, "1")
+											.Then(x.Make(y => y > 1, "2")));
+			rule(0).ShouldBe(new[] {"1"});
+			rule(1).ShouldBe(new[] {"2"});
+			rule(2).ShouldBeEmpty();
 		}
 	}
 }

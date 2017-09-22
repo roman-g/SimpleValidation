@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Shouldly;
 using SimpleValidation.Core.Builders;
+using SimpleValidation.Core.Combination;
 using SimpleValidation.Core.Common;
 using Xunit;
 
@@ -111,6 +112,29 @@ namespace SimpleValidation.Core.Tests
 							  .Union(x => x.Make("1"),
 									 x => x.Make("2"));
 			rule(new TestClass()).ShouldBe(new[]{"1", "2"});
+		}
+		[Fact]
+		public void Order()
+		{
+			var builder = MakeValidator.For<TestClass>();
+			var rule = builder.ForMember(x => x.StringField)
+							  .Order(x => x.Make(y => y.Length > 0, "1"),
+									 x => x.Make(y => y.Length > 1, "2"));
+			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
+			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
+			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
+		}
+
+		[Fact]
+		public void Custom()
+		{
+			var builder = MakeValidator.For<TestClass>();
+			var rule = builder.ForMember(x => x.StringField)
+							  .Custom(x => x.Make(y => y.Length > 0, "1")
+											.Then(x.Make(y => y.Length > 1, "2")));
+			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
+			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
+			rule(new TestClass { StringField = "12" }).ShouldBeEmpty();
 		}
 
 		private static (TestClass, string, string) Fail(MemberRuleContext<TestClass, string> context)

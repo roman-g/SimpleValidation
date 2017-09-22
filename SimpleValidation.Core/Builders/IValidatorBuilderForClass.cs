@@ -1,6 +1,6 @@
 ﻿namespace SimpleValidation.Core.Builders
 {
-	public interface IValidatorBuilderForClass<T>
+	public interface IValidatorBuilderForClass<TIn> : IValidationBuilder<TIn>
 	{
 	}
 }

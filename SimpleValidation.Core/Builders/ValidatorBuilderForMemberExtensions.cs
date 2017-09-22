@@ -74,12 +74,5 @@ namespace SimpleValidation.Core.Builders
 		{
 			return builder.Make((i, p) => predicate(p), _ => fail);
 		}
-
-		public static Validator<TIn, TFail> Union<TIn, TProperty, TFail>(
-			this IValidatorBuilderForMember<TIn, TProperty> builder,
-			params Func<IValidatorBuilderForMember<TIn, TProperty>, Validator<TIn, TFail>>[] rules)
-		{
-			return CombinationHelpers.Union(rules.Select(x => x(builder)).ToArray());
-		}
 	}
 }
