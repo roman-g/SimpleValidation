@@ -2,7 +2,6 @@
 using Shouldly;
 using SimpleValidation.Core.Builders;
 using SimpleValidation.Core.Combination;
-using SimpleValidation.Core.Common;
 using Xunit;
 
 namespace SimpleValidation.Core.Tests
@@ -28,55 +27,55 @@ namespace SimpleValidation.Core.Tests
 							 StringField = "field"
 						 };
 			var builder = MakeValidator.For<TestClass>();
-			var fieldFail = builder.ForMember(x => x.StringField).Make(Fail)(sample).Single();
+			var fieldFail = builder.ForMember(x => x.StringField).Rule(Fail)(sample).Single();
 			fieldFail.ShouldBe((sample, "StringField", "field"));
 
-			var propFail = builder.ForMember(x => x.StringProperty).Make(Fail)(sample).Single();
+			var propFail = builder.ForMember(x => x.StringProperty).Rule(Fail)(sample).Single();
 			propFail.ShouldBe((sample, "StringProperty", "prop"));
-			
-			var simpleFail = builder.ForMember(x => x.StringProperty).Make("fail")(sample).Single();
+
+			var simpleFail = builder.ForMember(x => x.StringProperty).Rule("fail")(sample).Single();
 			simpleFail.ShouldBe("fail");
 		}
 
 		[Fact]
 		public void PredicateWithContextAndMapping()
 		{
-			var builder = MakeValidator.For<TestClass>();
-			var rule = builder.ForMember(x => x.StringField)
-							  .Make((input, str) => str == input.StringProperty, Fail);
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Rule((input, str) => str == input.StringProperty, Fail);
 
 			var sampleForFail = new TestClass {StringField = "field", StringProperty = "property"};
 			var fail = rule(sampleForFail).Single();
 			fail.ShouldBe((sampleForFail, "StringField", "field"));
 
-			var sampleForSuccess = new TestClass { StringField = "good", StringProperty = "good" };
+			var sampleForSuccess = new TestClass {StringField = "good", StringProperty = "good"};
 			rule(sampleForSuccess).ShouldBeEmpty();
 		}
 
 		[Fact]
 		public void PredicateWithContextAndStaticFail()
 		{
-			var builder = MakeValidator.For<TestClass>();
 			const string expectedFail = "fail";
-			var rule = builder.ForMember(x => x.StringField)
-							  .Make((input, str) => str == input.StringProperty, expectedFail);
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Rule((input, str) => str == input.StringProperty, expectedFail);
 
-			var sampleForFail = new TestClass { StringField = "field", StringProperty = "property" };
+			var sampleForFail = new TestClass {StringField = "field", StringProperty = "property"};
 
 			var fail = rule(sampleForFail).Single();
 			fail.ShouldBe(expectedFail);
 
-			var sampleForSuccess = new TestClass { StringField = "good", StringProperty = "good" };
+			var sampleForSuccess = new TestClass {StringField = "good", StringProperty = "good"};
 			rule(sampleForSuccess).ShouldBeEmpty();
 		}
 
 		[Fact]
 		public void PredicateWithoutContextAndMapping()
 		{
-			var builder = MakeValidator.For<TestClass>();
 			const string validStringFieldValue = "good";
-			var rule = builder.ForMember(x => x.StringField)
-							  .Make(str => str == validStringFieldValue, Fail);
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Rule(str => str == validStringFieldValue, Fail);
 
 			var sampleForFail = new TestClass {StringField = "bad"};
 
@@ -90,36 +89,37 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void PredicateWithoutContextAndStaticFail()
 		{
-			var builder = MakeValidator.For<TestClass>();
 			const string validStringFieldValue = "good";
-			var expectedFail = "fail";
-			var rule = builder.ForMember(x => x.StringField)
-							  .Make(str => str == validStringFieldValue, expectedFail);
+			const string expectedFail = "fail";
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Rule(str => str == validStringFieldValue, expectedFail);
 
-			var sampleForFail = new TestClass { StringField = "bad" };
+			var sampleForFail = new TestClass {StringField = "bad"};
 			var fail = rule(sampleForFail).Single();
 			fail.ShouldBe(expectedFail);
 
-			var sampleForSuccess = new TestClass { StringField = validStringFieldValue };
+			var sampleForSuccess = new TestClass {StringField = validStringFieldValue};
 			rule(sampleForSuccess).ShouldBeEmpty();
 		}
 
 		[Fact]
 		public void Union()
 		{
-			var builder = MakeValidator.For<TestClass>();
-			var rule = builder.ForMember(x => x.StringField)
-							  .Union(x => x.Make("1"),
-									 x => x.Make("2"));
-			rule(new TestClass()).ShouldBe(new[]{"1", "2"});
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Union(x => x.Rule("1"),
+										   x => x.Rule("2"));
+			rule(new TestClass()).ShouldBe(new[] {"1", "2"});
 		}
+
 		[Fact]
 		public void Order()
 		{
-			var builder = MakeValidator.For<TestClass>();
-			var rule = builder.ForMember(x => x.StringField)
-							  .Order(x => x.Make(y => y.Length > 0, "1"),
-									 x => x.Make(y => y.Length > 1, "2"));
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Order(x => x.Rule(y => y.Length > 0, "1"),
+										   x => x.Rule(y => y.Length > 1, "2"));
 			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
 			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
 			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
@@ -128,13 +128,13 @@ namespace SimpleValidation.Core.Tests
 		[Fact]
 		public void Custom()
 		{
-			var builder = MakeValidator.For<TestClass>();
-			var rule = builder.ForMember(x => x.StringField)
-							  .Custom(x => x.Make(y => y.Length > 0, "1")
-											.Then(x.Make(y => y.Length > 1, "2")));
+			var rule = MakeValidator.For<TestClass>()
+									.ForMember(x => x.StringField)
+									.Custom(x => x.Rule(y => y.Length > 0, "1")
+												  .Then(x.Rule(y => y.Length > 1, "2")));
 			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
 			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
-			rule(new TestClass { StringField = "12" }).ShouldBeEmpty();
+			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
 		}
 
 		private static (TestClass, string, string) Fail(MemberRuleContext<TestClass, string> context)

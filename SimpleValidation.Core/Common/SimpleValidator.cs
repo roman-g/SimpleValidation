@@ -9,7 +9,7 @@ namespace SimpleValidation.Core.Common
 			return x =>
 				   {
 					   var result = rule(x);
-					   return result == null ? new TFail[0] : new[] { result };
+					   return result == null ? new TFail[0] : new[] {result};
 				   };
 		}
 	}

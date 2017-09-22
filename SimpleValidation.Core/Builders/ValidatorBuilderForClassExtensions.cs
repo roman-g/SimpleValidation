@@ -7,14 +7,14 @@ namespace SimpleValidation.Core.Builders
 {
 	public static class ValidatorBuilderForClassExtensions
 	{
-		public static Validator<TIn, TFail> Make<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
+		public static Validator<TIn, TFail> Rule<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
 															 Func<TIn, bool> predicate,
 															 Func<TIn, TFail> mappingToFail)
 		{
 			return SimpleValidator.Make(mappingToFail).WithPredicate(predicate);
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
+		public static Validator<TIn, TFail> Rule<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
 															 Func<TIn, bool> predicate,
 															 TFail fail)
 		{
@@ -27,7 +27,7 @@ namespace SimpleValidation.Core.Builders
 		{
 			return new AccessorCarrier<TIn, TProperty>(accessor);
 		}
-		
+
 		private class AccessorCarrier<TIn, TProperty> : IValidatorBuilderForMember<TIn, TProperty>
 		{
 			public AccessorCarrier(Expression<Func<TIn, TProperty>> accessor)

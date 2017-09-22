@@ -13,8 +13,8 @@ namespace SimpleValidation.Priority.Test
         [Fact]
         public void CollapseDifferentPriorities()
         {
-	        var rule1 = MakeValidator.For<string>().Make(s => s != "failInput1", "fail1").WithPriority(1);
-			var rule2 = MakeValidator.For<string>().Make(s => !s.StartsWith("failInput"), "fail2").WithPriority(2);
+	        var rule1 = MakeValidator.For<string>().Rule(s => s != "failInput1", "fail1").WithPriority(1);
+			var rule2 = MakeValidator.For<string>().Rule(s => !s.StartsWith("failInput"), "fail2").WithPriority(2);
 			
 			var rules = new[] { rule1, rule2 };
 			var collapsedRule = rules.Collapse();
@@ -26,8 +26,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void CollapseTheSamePriorities()
 		{
-			var rule1 = MakeValidator.For<string>().Make(s => s != "failInput1", "fail1").WithPriority(1);
-			var rule2 = MakeValidator.For<string>().Make(s => !s.StartsWith("failInput"),"fail2").WithPriority(1);
+			var rule1 = MakeValidator.For<string>().Rule(s => s != "failInput1", "fail1").WithPriority(1);
+			var rule2 = MakeValidator.For<string>().Rule(s => !s.StartsWith("failInput"),"fail2").WithPriority(1);
 
 			var rules = new[] { rule1, rule2 };
 			var collapsedRule = rules.Collapse();
@@ -38,8 +38,8 @@ namespace SimpleValidation.Priority.Test
 		[Fact]
 		public void Combine()
 		{
-			var rule1 = MakeValidator.For<string>().Make(s => s != "failInput1", "fail1").WithPriority(1);
-			var rule2 = MakeValidator.For<string>().Make(s => !s.StartsWith("failInput"), "fail2").WithPriority(1);
+			var rule1 = MakeValidator.For<string>().Rule(s => s != "failInput1", "fail1").WithPriority(1);
+			var rule2 = MakeValidator.For<string>().Rule(s => !s.StartsWith("failInput"), "fail2").WithPriority(1);
 			
 			var combinedRule = PriorityHelpers.Combine(CombinationHelpers.Order, rule1, rule2);
 			combinedRule.Priority.ShouldBe(1);

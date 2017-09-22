@@ -27,21 +27,21 @@ namespace SimpleValidation.Core.Builders
 			return input => validator(builder.ToContext(input));
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			Func<MemberRuleContext<TIn, TProperty>, TFail> mappingToFail)
 		{
 			return builder.InContext(SimpleValidator.Make(mappingToFail));
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			TFail fail)
 		{
 			return builder.InContext(SimpleValidator.Make((MemberRuleContext<TIn, TProperty> _) => fail));
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			Func<TIn, TProperty, bool> predicate,
 			Func<MemberRuleContext<TIn, TProperty>, TFail> mappingToFail)
@@ -50,15 +50,15 @@ namespace SimpleValidation.Core.Builders
 													.WithPredicate(c => predicate(c.Input, c.MemberValue)));
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			Func<TProperty, bool> predicate,
 			Func<MemberRuleContext<TIn, TProperty>, TFail> mappingToFail)
 		{
-			return builder.Make((i, p) => predicate(p), mappingToFail);
+			return builder.Rule((i, p) => predicate(p), mappingToFail);
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			Func<TIn, TProperty, bool> predicate,
 			TFail fail)
@@ -67,12 +67,12 @@ namespace SimpleValidation.Core.Builders
 											   .WithPredicate(c => predicate(c.Input, c.MemberValue))(builder.ToContext(input));
 		}
 
-		public static Validator<TIn, TFail> Make<TIn, TProperty, TFail>(
+		public static Validator<TIn, TFail> Rule<TIn, TProperty, TFail>(
 			this IValidatorBuilderForMember<TIn, TProperty> builder,
 			Func<TProperty, bool> predicate,
 			TFail fail)
 		{
-			return builder.Make((i, p) => predicate(p), _ => fail);
+			return builder.Rule((i, p) => predicate(p), _ => fail);
 		}
 	}
 }
