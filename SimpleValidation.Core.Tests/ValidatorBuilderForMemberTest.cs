@@ -9,16 +9,6 @@ namespace SimpleValidation.Core.Tests
 	public class ValidatorBuilderForMemberTest
 	{
 		[Fact]
-		public void InContext()
-		{
-			var rule = MakeValidator.For<TestClass>()
-									.ForMember(x => x.StringField)
-									.InContext(MemberRuleValidator.Make<TestClass, string, string>(ctx => ctx.MemberName));
-
-			rule(new TestClass()).Single().ShouldBe("StringField");
-		}
-
-		[Fact]
 		public void WithoutPredicate()
 		{
 			var sample = new TestClass
@@ -27,13 +17,13 @@ namespace SimpleValidation.Core.Tests
 							 StringField = "field"
 						 };
 			var builder = MakeValidator.For<TestClass>();
-			var fieldFail = builder.ForMember(x => x.StringField).Rule(Fail)(sample).Single();
+			var fieldFail = builder.ForMember(x => x.StringField).Custom(Fail)(sample).Single();
 			fieldFail.ShouldBe((sample, "StringField", "field"));
 
-			var propFail = builder.ForMember(x => x.StringProperty).Rule(Fail)(sample).Single();
+			var propFail = builder.ForMember(x => x.StringProperty).Custom(Fail)(sample).Single();
 			propFail.ShouldBe((sample, "StringProperty", "prop"));
 
-			var simpleFail = builder.ForMember(x => x.StringProperty).Rule("fail")(sample).Single();
+			var simpleFail = builder.ForMember(x => x.StringProperty).Fail("fail")(sample).Single();
 			simpleFail.ShouldBe("fail");
 		}
 
@@ -42,7 +32,7 @@ namespace SimpleValidation.Core.Tests
 		{
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Rule((input, str) => str == input.StringProperty, Fail);
+									.Ensure((input, str) => str == input.StringProperty, Fail);
 
 			var sampleForFail = new TestClass {StringField = "field", StringProperty = "property"};
 			var fail = rule(sampleForFail).Single();
@@ -58,7 +48,7 @@ namespace SimpleValidation.Core.Tests
 			const string expectedFail = "fail";
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Rule((input, str) => str == input.StringProperty, expectedFail);
+									.Ensure((input, str) => str == input.StringProperty, expectedFail);
 
 			var sampleForFail = new TestClass {StringField = "field", StringProperty = "property"};
 
@@ -75,7 +65,7 @@ namespace SimpleValidation.Core.Tests
 			const string validStringFieldValue = "good";
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Rule(str => str == validStringFieldValue, Fail);
+									.Ensure(str => str == validStringFieldValue, Fail);
 
 			var sampleForFail = new TestClass {StringField = "bad"};
 
@@ -93,7 +83,7 @@ namespace SimpleValidation.Core.Tests
 			const string expectedFail = "fail";
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Rule(str => str == validStringFieldValue, expectedFail);
+									.Ensure(str => str == validStringFieldValue, expectedFail);
 
 			var sampleForFail = new TestClass {StringField = "bad"};
 			var fail = rule(sampleForFail).Single();
@@ -108,8 +98,8 @@ namespace SimpleValidation.Core.Tests
 		{
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Union(x => x.Rule("1"),
-										   x => x.Rule("2"));
+									.Union(x => x.Fail("1"),
+										   x => x.Fail("2"));
 			rule(new TestClass()).ShouldBe(new[] {"1", "2"});
 		}
 
@@ -118,8 +108,8 @@ namespace SimpleValidation.Core.Tests
 		{
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Order(x => x.Rule(y => y.Length > 0, "1"),
-										   x => x.Rule(y => y.Length > 1, "2"));
+									.Order(x => x.Ensure(y => y.Length > 0, "1"),
+										   x => x.Ensure(y => y.Length > 1, "2"));
 			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
 			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
 			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
@@ -130,8 +120,8 @@ namespace SimpleValidation.Core.Tests
 		{
 			var rule = MakeValidator.For<TestClass>()
 									.ForMember(x => x.StringField)
-									.Custom(x => x.Rule(y => y.Length > 0, "1")
-												  .Then(x.Rule(y => y.Length > 1, "2")));
+									.With(x => x.Ensure(y => y.Length > 0, "1")
+												  .Then(x.Ensure(y => y.Length > 1, "2")));
 			rule(new TestClass {StringField = ""}).ShouldBe(new[] {"1"});
 			rule(new TestClass {StringField = "1"}).ShouldBe(new[] {"2"});
 			rule(new TestClass {StringField = "12"}).ShouldBeEmpty();
@@ -141,12 +131,12 @@ namespace SimpleValidation.Core.Tests
 		public void ComplexExample()
 		{
 			var valdiator = MakeValidator.For<TestClass>()
-										 .Custom(b => b.Union(bb => bb.ForMember(x => x.StringField)
-																	  .Order(x => x.Rule(s => s != null, "string field should not be null"),
-																			 x => x.Rule(s => s.Length >= 2, "string field length should be gte 2")),
+										 .With(b => b.Union(bb => bb.ForMember(x => x.StringField)
+																	  .Order(x => x.Ensure(s => s != null, "string field should not be null"),
+																			 x => x.Ensure(s => s.Length >= 2, "string field length should be gte 2")),
 															  bb => bb.ForMember(x => x.StringProperty)
-																	  .Rule(s => s != null, "string property should not be null"))
-													   .Then(b.Rule(i => i.StringField == i.StringProperty, "strings should be equal")));
+																	  .Ensure(s => s != null, "string property should not be null"))
+													   .Then(b.Ensure(i => i.StringField == i.StringProperty, "strings should be equal")));
 
 			valdiator(new TestClass {StringField = null, StringProperty = null})
 				.ShouldBe(new[] {"string field should not be null", "string property should not be null"});

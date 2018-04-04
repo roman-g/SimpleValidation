@@ -48,7 +48,7 @@ namespace SimpleValidation.Default
 					   };
 			}
 
-			return accessor.Rule(predicate, Mapping);
+			return accessor.Ensure(predicate, Mapping);
 		}
 	}
 }

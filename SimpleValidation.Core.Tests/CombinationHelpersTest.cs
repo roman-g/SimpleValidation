@@ -25,6 +25,7 @@ namespace SimpleValidation.Core.Tests
 			rule("failInput2").Single().ShouldBe("fail2");
 			rule("failInput1").Single().ShouldBe("fail1");
 			rule1.Then(crashRule)("failInput1").Single().ShouldBe("fail1");
+			Should.Throw<Exception>(() => rule1.Then(crashRule)("someInput"));
 		}
 
 		[Fact]

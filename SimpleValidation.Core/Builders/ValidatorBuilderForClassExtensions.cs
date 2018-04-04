@@ -7,18 +7,24 @@ namespace SimpleValidation.Core.Builders
 {
 	public static class ValidatorBuilderForClassExtensions
 	{
-		public static Validator<TIn, TFail> Rule<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
+		public static Validator<TIn, TFail> Ensure<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
 															 Func<TIn, bool> predicate,
 															 Func<TIn, TFail> mappingToFail)
 		{
 			return SimpleValidator.Make(mappingToFail).WithPredicate(predicate);
 		}
 
-		public static Validator<TIn, TFail> Rule<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
+		public static Validator<TIn, TFail> Ensure<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
 															 Func<TIn, bool> predicate,
 															 TFail fail)
 		{
 			return SimpleValidator.Make((TIn x) => fail).WithPredicate(predicate);
+		}
+		
+		public static Validator<TIn, TFail> Custom<TIn, TFail>(this IValidatorBuilderForClass<TIn> _,
+		                                                       Func<TIn, TFail> mapping)
+		{
+			return SimpleValidator.Make(mapping);
 		}
 
 		public static IValidatorBuilderForMember<TIn, TProperty> ForMember<TIn, TProperty>(
